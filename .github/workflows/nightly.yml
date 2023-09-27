@@ -25,8 +25,9 @@ jobs:
       - run: dagger query -m github.com/shykes/daggerverse/dagger#main --doc ./graphql/publish-zenith-darwin-arm64.gql
 
       # Fail if this built binary doesn't work
+      - run: ./dist/dagger-zenith-linux-amd64 version
+        shell: bash
       #- run: echo "{helloWorld{message withName(name: \"Monde\"){withGreeting(greeting: \"Bonjour\"){message}}}}" | ./dist/dagger-zenith-linux-amd64 query -m github.com/shykes/daggerverse/helloWorld
-      #    shell: bash
 
       - run: gh release delete main --yes
         env:
