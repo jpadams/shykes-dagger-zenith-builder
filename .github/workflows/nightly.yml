@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DAGGER_CLOUD_TOKEN: ${{ secrets.DAGGER_CLOUD_TOKEN }}
-      _EXPERIMENTAL_DAGGER_RUNNER_HOST: docker-container://jeremyatdockerhub/dagger-engine-worker-zenith:main
+      #_EXPERIMENTAL_DAGGER_RUNNER_HOST: docker-container://jeremyatdockerhub/dagger-engine-worker-zenith:main
 
     steps:
       - uses: actions/checkout@v4
@@ -22,10 +22,10 @@ jobs:
       - run: dagger version
         shell: bash
         
-      - run: dagger query -m github.com/shykes/daggerverse/dagger#main --doc ./graphql/publish-zenith-linux-amd64.gql
-      - run: dagger query -m github.com/shykes/daggerverse/dagger#main --doc ./graphql/publish-zenith-linux-arm64.gql
-      - run: dagger query -m github.com/shykes/daggerverse/dagger#main --doc ./graphql/publish-zenith-darwin-amd64.gql
-      - run: dagger query -m github.com/shykes/daggerverse/dagger#main --doc ./graphql/publish-zenith-darwin-arm64.gql
+      - run: sudo dagger query -m github.com/shykes/daggerverse/dagger#main --doc ./graphql/publish-zenith-linux-amd64.gql
+      - run: sudo dagger query -m github.com/shykes/daggerverse/dagger#main --doc ./graphql/publish-zenith-linux-arm64.gql
+      - run: sudo dagger query -m github.com/shykes/daggerverse/dagger#main --doc ./graphql/publish-zenith-darwin-amd64.gql
+      - run: sudo dagger query -m github.com/shykes/daggerverse/dagger#main --doc ./graphql/publish-zenith-darwin-arm64.gql
 
       # Fail if this built binary doesn't work
       - run: ./dist/dagger-zenith-linux-amd64 version
