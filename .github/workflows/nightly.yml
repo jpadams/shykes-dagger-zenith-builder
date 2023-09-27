@@ -18,7 +18,10 @@ jobs:
 
       - run: echo "${{ secrets.DHTOKEN }}" | docker login -u jeremyatdockerhub --password-stdin
       - run: cd /usr/local/bin && { sudo curl -L https://github.com/jpadams/shykes-dagger-zenith-builder/releases/download/main/dagger-zenith-linux-amd64 -o dagger; sudo chmod +x dagger; cd -; }
-
+      # Fail if this binary doesn't work
+      - run: dagger version
+        shell: bash
+        
       - run: dagger query -m github.com/shykes/daggerverse/dagger#main --doc ./graphql/publish-zenith-linux-amd64.gql
       - run: dagger query -m github.com/shykes/daggerverse/dagger#main --doc ./graphql/publish-zenith-linux-arm64.gql
       - run: dagger query -m github.com/shykes/daggerverse/dagger#main --doc ./graphql/publish-zenith-darwin-amd64.gql
