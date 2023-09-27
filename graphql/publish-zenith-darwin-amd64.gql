@@ -1,0 +1,14 @@
+query {
+    dagger {
+        engine {
+            fromZenithBranch {
+                cli(workerRegistry: "jeremyatdockerhub/dagger-engine-worker-zenith", arch: "amd64", operatingSystem: "darwin") {
+                    export(path: "./dist/dagger-zenith-darwin-amd64")
+                }
+                worker {
+                    publish(ref: "jeremyatdockerhub/dagger-engine-worker-zenith:main")
+                }
+            }
+        }
+    }
+}
