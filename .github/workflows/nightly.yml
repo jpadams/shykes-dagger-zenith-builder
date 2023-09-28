@@ -12,6 +12,7 @@ jobs:
     env:
       DAGGER_CLOUD_TOKEN: ${{ secrets.DAGGER_CLOUD_TOKEN }}
       _EXPERIMENTAL_DAGGER_RUNNER_HOST: docker-container://jeremyatdockerhub/dagger-engine-worker-zenith:main
+      _EXPERIMENTAL_DAGGER_CLI_BIN: /usr/local/bin/dagger
 
     steps:
       - uses: actions/checkout@v4
