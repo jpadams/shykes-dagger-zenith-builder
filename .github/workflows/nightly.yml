@@ -35,8 +35,6 @@ jobs:
       - run: docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
 
       - run: |
-          gh release delete nightly --yes
-          gh release create nightly --prerelease --notes-from-tag
           gh release upload --clobber nightly ./dist/dagger-zenith-linux-amd64
           gh release upload --clobber nightly ./dist/dagger-zenith-linux-arm64
           gh release upload --clobber nightly ./dist/dagger-zenith-darwin-amd64
