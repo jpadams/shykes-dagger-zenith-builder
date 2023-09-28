@@ -47,14 +47,14 @@ jobs:
 #      #- run: echo "{helloWorld{message withName(name: \"Monde\"){withGreeting(greeting: \"Bonjour\"){message}}}}" | ./dist/dagger-zenith-linux-amd64 query -m github.com/shykes/daggerverse/helloWorld
 #
       - run: |
-          gh release upload --clobber nightly ./dist/dagger-zenith-darwin-amd64
+          gh release upload --clobber nightly ./dist/dagger-zenith-darwin-arm64
         env:
           GH_TOKEN: ${{ secrets.GHTOKEN }}
 #          gh release delete nightly --yes
 #          gh release create nightly --prerelease --notes-from-tag
 #          gh release upload --clobber nightly ./dist/dagger-zenith-linux-amd64
 #          gh release upload --clobber nightly ./dist/dagger-zenith-linux-arm64
-#          gh release upload --clobber nightly ./dist/dagger-zenith-darwin-arm64
+#          gh release upload --clobber nightly ./dist/dagger-zenith-darwin-amd64
 #
 #      - name: Stop Engine
 #        run: |
