@@ -20,7 +20,7 @@ jobs:
         shell: bash
 
       - run: |
-          dagger query -m ./dagger --doc ./graphql/publish-zenith-darwin-arm64.gql
+          dagger query -m github.com/kpenfound/zenith-releaser/dagger --doc ./graphql/publish-zenith-darwin-arm64.gql
         shell: bash
         env:
           DAGGER_CLOUD_TOKEN: ${{ secrets.DAGGER_CLOUD_TOKEN }}
