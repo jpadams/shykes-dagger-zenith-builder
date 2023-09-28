@@ -32,12 +32,12 @@ jobs:
 #        shell: bash
 #        
       - run: |
-#          dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-linux-amd64.gql
-#          dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-linux-arm64.gql
-#          dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-darwin-amd64.gql
           dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-darwin-arm64.gql
         env:
           DAGGER_CLOUD_TOKEN: ${{ secrets.DAGGER_CLOUD_TOKEN }}
+#          dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-linux-amd64.gql
+#          dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-linux-arm64.gql
+#          dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-darwin-amd64.gql
 #          _EXPERIMENTAL_DAGGER_RUNNER_HOST: docker-container://dagger-engine
 #          _EXPERIMENTAL_DAGGER_CLI_BIN: /usr/local/bin/dagger
 #
@@ -47,14 +47,14 @@ jobs:
 #      #- run: echo "{helloWorld{message withName(name: \"Monde\"){withGreeting(greeting: \"Bonjour\"){message}}}}" | ./dist/dagger-zenith-linux-amd64 query -m github.com/shykes/daggerverse/helloWorld
 #
       - run: |
+          gh release upload --clobber nightly ./dist/dagger-zenith-darwin-amd64
+        env:
+          GH_TOKEN: ${{ secrets.GHTOKEN }}
 #          gh release delete nightly --yes
 #          gh release create nightly --prerelease --notes-from-tag
 #          gh release upload --clobber nightly ./dist/dagger-zenith-linux-amd64
 #          gh release upload --clobber nightly ./dist/dagger-zenith-linux-arm64
-          gh release upload --clobber nightly ./dist/dagger-zenith-darwin-amd64
 #          gh release upload --clobber nightly ./dist/dagger-zenith-darwin-arm64
-        env:
-          GH_TOKEN: ${{ secrets.GHTOKEN }}
 #
 #      - name: Stop Engine
 #        run: |
