@@ -20,12 +20,11 @@ jobs:
         shell: bash
 
       - run: |
-          dagger query -h
-          docker ps
-          dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-darwin-arm64.gql
+          dagger query -m ./dagger --doc ./graphql/publish-zenith-darwin-arm64.gql
         shell: bash
         env:
           DAGGER_CLOUD_TOKEN: ${{ secrets.DAGGER_CLOUD_TOKEN }}
+          _EXPERIMENTAL_DAGGER_CLI_BIN: /usr/local/bin/dagger
 #          dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-linux-amd64.gql
 #          dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-linux-arm64.gql
 #          dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-darwin-amd64.gql

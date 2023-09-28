@@ -3921,6 +3921,29 @@ func main() {
 
 func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName string, inputArgs map[string][]byte) (any, error) {
 	switch parentName {
+	case "Dagger":
+		switch fnName {
+		case "Engine":
+			var err error
+			var parent Dagger
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				fmt.Println(err.Error())
+				os.Exit(2)
+			}
+			return (*Dagger).Engine(&parent), nil
+		case "Cloud":
+			var err error
+			var parent Dagger
+			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				fmt.Println(err.Error())
+				os.Exit(2)
+			}
+			return (*Dagger).Cloud(&parent), nil
+		default:
+			return nil, fmt.Errorf("unknown function %s", fnName)
+		}
 	case "Worker":
 		switch fnName {
 		case "Arches":
@@ -3979,7 +4002,13 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				fmt.Println(err.Error())
 				os.Exit(2)
 			}
-			return (*Worker).QemuBins(&parent), nil
+			var arch string
+			err = json.Unmarshal([]byte(inputArgs["arch"]), &arch)
+			if err != nil {
+				fmt.Println(err.Error())
+				os.Exit(2)
+			}
+			return (*Worker).QemuBins(&parent, arch), nil
 		case "Buildctl":
 			var err error
 			var parent Worker
@@ -3988,7 +4017,13 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				fmt.Println(err.Error())
 				os.Exit(2)
 			}
-			return (*Worker).Buildctl(&parent), nil
+			var arch string
+			err = json.Unmarshal([]byte(inputArgs["arch"]), &arch)
+			if err != nil {
+				fmt.Println(err.Error())
+				os.Exit(2)
+			}
+			return (*Worker).Buildctl(&parent, arch), nil
 		case "Shim":
 			var err error
 			var parent Worker
@@ -3997,11 +4032,23 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				fmt.Println(err.Error())
 				os.Exit(2)
 			}
-			return (*Worker).Shim(&parent), nil
+			var arch string
+			err = json.Unmarshal([]byte(inputArgs["arch"]), &arch)
+			if err != nil {
+				fmt.Println(err.Error())
+				os.Exit(2)
+			}
+			return (*Worker).Shim(&parent, arch), nil
 		case "Daemon":
 			var err error
 			var parent Worker
 			err = json.Unmarshal(parentJSON, &parent)
+			if err != nil {
+				fmt.Println(err.Error())
+				os.Exit(2)
+			}
+			var arch string
+			err = json.Unmarshal([]byte(inputArgs["arch"]), &arch)
 			if err != nil {
 				fmt.Println(err.Error())
 				os.Exit(2)
@@ -4012,7 +4059,7 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				fmt.Println(err.Error())
 				os.Exit(2)
 			}
-			return (*Worker).Daemon(&parent, version), nil
+			return (*Worker).Daemon(&parent, arch, version), nil
 		case "CNIPlugins":
 			var err error
 			var parent Worker
@@ -4021,7 +4068,13 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				fmt.Println(err.Error())
 				os.Exit(2)
 			}
-			return (*Worker).CNIPlugins(&parent), nil
+			var arch string
+			err = json.Unmarshal([]byte(inputArgs["arch"]), &arch)
+			if err != nil {
+				fmt.Println(err.Error())
+				os.Exit(2)
+			}
+			return (*Worker).CNIPlugins(&parent, arch), nil
 		case "DNSName":
 			var err error
 			var parent Worker
@@ -4030,7 +4083,13 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				fmt.Println(err.Error())
 				os.Exit(2)
 			}
-			return (*Worker).DNSName(&parent), nil
+			var arch string
+			err = json.Unmarshal([]byte(inputArgs["arch"]), &arch)
+			if err != nil {
+				fmt.Println(err.Error())
+				os.Exit(2)
+			}
+			return (*Worker).DNSName(&parent, arch), nil
 		case "Runc":
 			var err error
 			var parent Worker
@@ -4039,7 +4098,13 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				fmt.Println(err.Error())
 				os.Exit(2)
 			}
-			return (*Worker).Runc(&parent), nil
+			var arch string
+			err = json.Unmarshal([]byte(inputArgs["arch"]), &arch)
+			if err != nil {
+				fmt.Println(err.Error())
+				os.Exit(2)
+			}
+			return (*Worker).Runc(&parent, arch), nil
 		case "Tests":
 			var err error
 			var parent Worker
@@ -4049,29 +4114,6 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 				os.Exit(2)
 			}
 			return nil, (*Worker).Tests(&parent, ctx)
-		default:
-			return nil, fmt.Errorf("unknown function %s", fnName)
-		}
-	case "Dagger":
-		switch fnName {
-		case "Engine":
-			var err error
-			var parent Dagger
-			err = json.Unmarshal(parentJSON, &parent)
-			if err != nil {
-				fmt.Println(err.Error())
-				os.Exit(2)
-			}
-			return (*Dagger).Engine(&parent), nil
-		case "Cloud":
-			var err error
-			var parent Dagger
-			err = json.Unmarshal(parentJSON, &parent)
-			if err != nil {
-				fmt.Println(err.Error())
-				os.Exit(2)
-			}
-			return (*Dagger).Cloud(&parent), nil
 		default:
 			return nil, fmt.Errorf("unknown function %s", fnName)
 		}
@@ -4191,6 +4233,15 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 	case "":
 		return dag.CurrentModule().
 			WithObject(
+				dag.TypeDef().WithObject("Dagger").
+					WithFunction(
+						dag.NewFunction("Engine",
+							dag.TypeDef().WithObject("Engine")).
+							WithDescription("The Dagger Engine\n")).
+					WithFunction(
+						dag.NewFunction("Cloud",
+							dag.TypeDef().WithObject("Cloud")))).
+			WithObject(
 				dag.TypeDef().WithObject("Worker").
 					WithFunction(
 						dag.NewFunction("Arches",
@@ -4211,27 +4262,34 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 							WithArg("arch", dag.TypeDef().WithKind(Stringkind))).
 					WithFunction(
 						dag.NewFunction("QemuBins",
-							dag.TypeDef().WithObject("Directory"))).
+							dag.TypeDef().WithObject("Directory")).
+							WithArg("arch", dag.TypeDef().WithKind(Stringkind))).
 					WithFunction(
 						dag.NewFunction("Buildctl",
-							dag.TypeDef().WithObject("File"))).
+							dag.TypeDef().WithObject("File")).
+							WithArg("arch", dag.TypeDef().WithKind(Stringkind))).
 					WithFunction(
 						dag.NewFunction("Shim",
-							dag.TypeDef().WithObject("File"))).
+							dag.TypeDef().WithObject("File")).
+							WithArg("arch", dag.TypeDef().WithKind(Stringkind))).
 					WithFunction(
 						dag.NewFunction("Daemon",
 							dag.TypeDef().WithObject("File")).
 							WithDescription("The worker daemon\n").
+							WithArg("arch", dag.TypeDef().WithKind(Stringkind)).
 							WithArg("version", dag.TypeDef().WithKind(Stringkind))).
 					WithFunction(
 						dag.NewFunction("CNIPlugins",
-							dag.TypeDef().WithObject("Directory"))).
+							dag.TypeDef().WithObject("Directory")).
+							WithArg("arch", dag.TypeDef().WithKind(Stringkind))).
 					WithFunction(
 						dag.NewFunction("DNSName",
-							dag.TypeDef().WithObject("File"))).
+							dag.TypeDef().WithObject("File")).
+							WithArg("arch", dag.TypeDef().WithKind(Stringkind))).
 					WithFunction(
 						dag.NewFunction("Runc",
-							dag.TypeDef().WithObject("File"))).
+							dag.TypeDef().WithObject("File")).
+							WithArg("arch", dag.TypeDef().WithKind(Stringkind))).
 					WithFunction(
 						dag.NewFunction("Tests",
 							dag.TypeDef().WithKind(Voidkind).WithOptional(true)).
@@ -4239,15 +4297,6 @@ func invoke(ctx context.Context, parentJSON []byte, parentName string, fnName st
 					WithField("GoBase", dag.TypeDef().WithObject("Container")).
 					WithField("DaggerCLI", dag.TypeDef().WithObject("File")).
 					WithField("Version", dag.TypeDef().WithKind(Stringkind))).
-			WithObject(
-				dag.TypeDef().WithObject("Dagger").
-					WithFunction(
-						dag.NewFunction("Engine",
-							dag.TypeDef().WithObject("Engine")).
-							WithDescription("The Dagger Engine\n")).
-					WithFunction(
-						dag.NewFunction("Cloud",
-							dag.TypeDef().WithObject("Cloud")))).
 			WithObject(
 				dag.TypeDef().WithObject("Cloud").
 					WithFunction(
