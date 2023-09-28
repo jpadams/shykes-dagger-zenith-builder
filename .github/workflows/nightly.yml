@@ -27,6 +27,9 @@ jobs:
             -d \
             -v dagger-engine:/var/lib/dagger \
             jeremyatdockerhub/dagger-engine-worker-zenith:main
+
+      - run: docker ps
+        shell: bash
         
       - run: |
           dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-linux-amd64.gql
