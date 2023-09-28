@@ -23,7 +23,7 @@ jobs:
         shell: bash
 
       - run: |
-        docker run \
+          docker run \
             --name dagger-engine \
             --privileged \
             --stop-signal SIGTERM \
