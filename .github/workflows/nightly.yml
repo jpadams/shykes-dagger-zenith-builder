@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DAGGER_CLOUD_TOKEN: ${{ secrets.DAGGER_CLOUD_TOKEN }}
-      #_EXPERIMENTAL_DAGGER_RUNNER_HOST: docker-container://jeremyatdockerhub/dagger-engine-worker-zenith:main
+      _EXPERIMENTAL_DAGGER_RUNNER_HOST: docker-container://jeremyatdockerhub/dagger-engine-worker-zenith:main
 
     steps:
       - uses: actions/checkout@v4
@@ -21,6 +21,15 @@ jobs:
       # Fail if this binary doesn't work
       - run: dagger version
         shell: bash
+
+      - run: |
+        docker run \
+            --name dagger-engine \
+            --privileged \
+            --stop-signal SIGTERM \
+            -d \
+            -v dagger-engine:/var/lib/dagger \
+            jeremyatdockerhub/dagger-engine-worker-zenith:main
         
       - run: dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-linux-amd64.gql
       - run: dagger query -m github.com/shykes/daggerverse/dagger --doc ./graphql/publish-zenith-linux-arm64.gql
@@ -42,3 +51,8 @@ jobs:
       - run: gh release upload --clobber nightly ./dist/dagger-zenith-linux-arm64
       - run: gh release upload --clobber nightly ./dist/dagger-zenith-darwin-amd64
       - run: gh release upload --clobber nightly ./dist/dagger-zenith-darwin-arm64
+
+      - name: Stop Engine
+        run: |
+          docker stop -t 300 dagger-engine
+          docker logs dagger-engine
