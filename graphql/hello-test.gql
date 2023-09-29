@@ -1,0 +1,10 @@
+query {
+  helloWorld {
+    message
+    withName(name: "Monde") {
+      withGreeting(greeting: "Bonjour") {
+        message
+      }
+    }
+  }
+}

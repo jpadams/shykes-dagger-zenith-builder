@@ -29,9 +29,12 @@ jobs:
           DAGGER_CLOUD_TOKEN: ${{ secrets.DAGGER_CLOUD_TOKEN }}
 
       # Fail if this built binary doesn't work
-      - run: ./dist/dagger-zenith-linux-amd64 version
+      - run: |
+          ./dist/dagger-zenith-linux-amd64 version
+          ./dist/dagger-zenith-linux-amd64 query -m github.com/shykes/daggerverse/helloWorld --doc ./graphql/hello-test.gql
         shell: bash
 
+      # Gracefully stop the Dagger Worker container to maximize cache sync
       - run: docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
 
       - run: |
