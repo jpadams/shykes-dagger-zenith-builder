@@ -1,7 +1,7 @@
 query {
     dagger {
         engine {
-            fromZenithBranch {
+            zenith {
                 cli(workerRegistry: "jeremyatdockerhub/dagger-engine-worker-zenith", arch: "arm64", operatingSystem: "linux") {
                     export(path: "./dist/dagger-zenith-linux-arm64")
                 }
