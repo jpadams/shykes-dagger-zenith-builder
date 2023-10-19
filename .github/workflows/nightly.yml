@@ -20,10 +20,10 @@ jobs:
         shell: bash
 
       - run: |
-          dagger query -m github.com/jpadams/shykes-daggerverse-servicesv2/dagger@7a9fbbf0d5c9c67fc8c0d33c0e3cea88520476ee --doc ./graphql/publish-zenith-linux-amd64.gql # this one builds worker image and cli
-          dagger query -m github.com/jpadams/shykes-daggerverse-servicesv2/dagger@7a9fbbf0d5c9c67fc8c0d33c0e3cea88520476ee --doc ./graphql/publish-zenith-linux-arm64.gql # these just build clis
-          dagger query -m github.com/jpadams/shykes-daggerverse-servicesv2/dagger@7a9fbbf0d5c9c67fc8c0d33c0e3cea88520476ee --doc ./graphql/publish-zenith-darwin-amd64.gql
-          dagger query -m github.com/jpadams/shykes-daggerverse-servicesv2/dagger@7a9fbbf0d5c9c67fc8c0d33c0e3cea88520476ee --doc ./graphql/publish-zenith-darwin-arm64.gql
+          dagger query --progress=plain -m github.com/jpadams/shykes-daggerverse-servicesv2/dagger --doc ./graphql/publish-zenith-linux-amd64.gql # this one builds worker image and cli
+          dagger query --progress=plain -m github.com/jpadams/shykes-daggerverse-servicesv2/dagger --doc ./graphql/publish-zenith-linux-arm64.gql # these just build clis
+          dagger query --progress=plain -m github.com/jpadams/shykes-daggerverse-servicesv2/dagger --doc ./graphql/publish-zenith-darwin-amd64.gql
+          dagger query --progress=plain -m github.com/jpadams/shykes-daggerverse-servicesv2/dagger --doc ./graphql/publish-zenith-darwin-arm64.gql
         shell: bash
         env:
           DAGGER_CLOUD_TOKEN: ${{ secrets.DAGGER_CLOUD_TOKEN }}
