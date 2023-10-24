@@ -1,9 +1,9 @@
 name: Nightly Zenith build
 
 on:
-  schedule:
-    - cron: '0 * * * *' # every 1 hour
   workflow_dispatch: # on button click
+   #schedule:
+   # - cron: '0 * * * *' # every 1 hour
 
 jobs:
   nightly:
